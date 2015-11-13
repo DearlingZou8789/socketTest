@@ -165,6 +165,7 @@
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     //调用gzip库进行解压
+    NSLog(@"data = %@", data);
     NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"服务端的数据 -> %@", str);
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n", str]];

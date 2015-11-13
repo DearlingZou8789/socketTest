@@ -21,13 +21,16 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - CocoaAsyncSocket (7.4.2)
+  - GZIP (1.1.1)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.6.1)
   - CocoaAsyncSocket (~> 7.4.2)
+  - GZIP (~> 1.1.1)
 
 SPEC CHECKSUMS:
   AFNetworking: 8e4e60500beb8bec644cf575beee72990a76d399
   CocoaAsyncSocket: f5783bdedd232d91b89769bc4b5a1580aed518ad
+  GZIP: f8beb59597f651e6970a45b816508a9c6d700b77
 
 COCOAPODS: 0.39.0
