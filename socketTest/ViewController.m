@@ -115,6 +115,7 @@
     if (error)
     {
         NSLog(@"error = %@", error);
+        textView.text = [textView.text stringByAppendingString:error.localizedDescription];
     }
     [GlobalInfo setUserDefaults:ipStr name:@"ip"];
     [GlobalInfo setUserDefaults:portStr name:@"port"];
@@ -126,6 +127,14 @@
     NSString *remoteAddress = [NSString stringWithFormat:@"host = %@, port = %d", host, port];
     NSString *localAddress = [NSString stringWithFormat:@"localhost = %@, port = %d", sock.localHost, sock.localPort];
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n%@\n", remoteAddress, localAddress]];
+    //发送字符串给服务器进行通讯交互,3145
+//    NSString *userName = @"root";
+//    NSString *password = @"111111";
+//    NSString *companyName = @"上海涨乐互联网科技有限公司";
+//    NSString *userEnabled = @"true";
+//    NSString *login = [NSString stringWithFormat:@"Login %@,%@,%@,%@\r\n", userName, password, companyName, userEnabled];
+//    NSData *data = [login dataUsingEncoding:NSUTF8StringEncoding];
+//    [sock writeData:data withTimeout:100.0 tag:1];
 }
 
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err
@@ -153,10 +162,9 @@
     return YES;
 }
 
-
-
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    //调用gzip库进行解压
     NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"服务端的数据 -> %@", str);
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n", str]];
