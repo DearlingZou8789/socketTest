@@ -10,7 +10,7 @@
 #import "GlobalInfo.h"
 #import "CocoaAsyncSocket.h"
 #import "GZIP.h"
-#import <CommonCrypto/CommonCrypto.h>
+#import "NSString+RandomString.h"
 
 @interface ViewController ()<AsyncSocketDelegate, UITextFieldDelegate>
 {
@@ -39,6 +39,12 @@
     {
         portTf.text = [GlobalInfo getUserDefaults:@"port"];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    NSLog(@"str = %@", [NSString randomStringWithLength:8]);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -93,7 +99,7 @@
 }
 
 - (IBAction)connectAction:(UIButton *)sender {
-    if ([self isRightString:ipTf alertString:@"请输入IP地址"] || [self isRightString:portTf alertString:@"请输入端口号"] || [self isRightString:userTf alertString:@"请输入用户名"] || [self isRightString:passTf alertString:@"请输入密码"])
+    if (![self isRightString:ipTf alertString:@"请输入IP地址"] || ![self isRightString:portTf alertString:@"请输入端口号"] || ![self isRightString:userTf alertString:@"请输入用户名"] || ![self isRightString:passTf alertString:@"请输入密码"])
     {
         return;
     }
@@ -128,7 +134,7 @@
     }
     [GlobalInfo setUserDefaults:ipStr name:@"ip"];
     [GlobalInfo setUserDefaults:portStr name:@"port"];
-    [socket readDataWithTimeout:-1 tag:1000];
+    [socket readDataWithTimeout:-1 tag:1];
 }
 
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port
@@ -137,13 +143,32 @@
     NSString *localAddress = [NSString stringWithFormat:@"localhost = %@, port = %d", sock.localHost, sock.localPort];
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n%@\n", remoteAddress, localAddress]];
     //发送字符串给服务器进行通讯交互,3145
-//    NSString *userName = @"root";
-//    NSString *password = @"111111";
-//    NSString *companyName = @"上海涨乐互联网科技有限公司";
-//    NSString *userEnabled = @"true";
-//    NSString *login = [NSString stringWithFormat:@"Login %@,%@,%@,%@\r\n", userName, password, companyName, userEnabled];
-//    NSData *data = [login dataUsingEncoding:NSUTF8StringEncoding];
-//    [sock writeData:data withTimeout:100.0 tag:1];
+    NSString *userName = userTf.text;                       //userName
+    NSString *password = passTf.text;                       //password
+    NSString *companyName = @"abcd";      //account
+    NSString *userEnabled = @"1";                        //enabled
+//    NSString *token = [NSString randomStringWithLength:32]; //token
+    NSString *token = @"abcdewojeroijewoqjriejw";
+    //传入参数
+    NSString *userArgument = [NSString stringWithFormat:@"action=validate|userName=%@|password=%@|token=%@|account=%@|enabled=%@", userName, password, token, companyName, userEnabled];
+    NSLog(@"加密前 = %@", userArgument);
+    NSString *desKey = [NSString randomStringWithLength:8];
+    //DES加密后的参数
+    userArgument = [userArgument DESEnCodeCrptionWithKey:desKey];
+    //拼装最后的参数
+    NSString *lastPostData = [NSString stringWithFormat:@"client %@$%@\n\r", desKey, userArgument];
+    NSLog(@"lastPostData = %@", lastPostData);
+    NSData *data = [lastPostData dataUsingEncoding:NSUTF8StringEncoding];
+    NSLog(@"userArgument = %@, desKey = %@,\n lastPostData = %@, data = %@", userArgument, desKey, lastPostData, data);
+    [sock writeData:data withTimeout:100 tag:1];
+}
+
+- (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+    if (tag == 1)
+    {
+        NSLog(@"sock = %@", sock.description);
+    }
 }
 
 //socket连接不成功时,需要切换ip地址
@@ -158,6 +183,7 @@
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock
 {
+    NSLog(@"%@", sock);
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"连接断开"]];
 }
 
@@ -195,7 +221,7 @@
 }
 
 - (IBAction)closeAction:(UIButton *)sender {
-//    [socket disconnect];
+    [socket disconnect];
     [socket disconnectAfterReadingAndWriting];
 }
 

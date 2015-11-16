@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		E24451EE092729B26331D4D3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F920FA57BA319EFE712C5501 /* libPods.a */; };
+		E42C88271BF9BE3C005FCB5A /* CryptAligthom.m in Sources */ = {isa = PBXBuildFile; fileRef = E42C88261BF9BE3C005FCB5A /* CryptAligthom.m */; };
+		E4CE7D4C1BF9D8B5005F4ACD /* NSString+RandomString.m in Sources */ = {isa = PBXBuildFile; fileRef = E4CE7D4B1BF9D8B5005F4ACD /* NSString+RandomString.m */; };
 		E4DCC8D91BE0609800E6870B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E4DCC8D81BE0609800E6870B /* main.m */; };
 		E4DCC8DC1BE0609800E6870B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4DCC8DB1BE0609800E6870B /* AppDelegate.m */; };
 		E4DCC8DF1BE0609800E6870B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4DCC8DE1BE0609800E6870B /* ViewController.m */; };
@@ -39,6 +41,10 @@
 
 /* Begin PBXFileReference section */
 		53CFA09F1DBBF731EEBFE31C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		E42C88251BF9BE3C005FCB5A /* CryptAligthom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptAligthom.h; sourceTree = "<group>"; };
+		E42C88261BF9BE3C005FCB5A /* CryptAligthom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryptAligthom.m; sourceTree = "<group>"; };
+		E4CE7D4A1BF9D8B5005F4ACD /* NSString+RandomString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+RandomString.h"; sourceTree = "<group>"; };
+		E4CE7D4B1BF9D8B5005F4ACD /* NSString+RandomString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+RandomString.m"; sourceTree = "<group>"; };
 		E4DCC8D41BE0609800E6870B /* socketTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = socketTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4DCC8D81BE0609800E6870B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E4DCC8DA1BE0609800E6870B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -106,6 +112,17 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		E42C88241BF9BD05005FCB5A /* Common Crypt */ = {
+			isa = PBXGroup;
+			children = (
+				E42C88251BF9BE3C005FCB5A /* CryptAligthom.h */,
+				E42C88261BF9BE3C005FCB5A /* CryptAligthom.m */,
+				E4CE7D4A1BF9D8B5005F4ACD /* NSString+RandomString.h */,
+				E4CE7D4B1BF9D8B5005F4ACD /* NSString+RandomString.m */,
+			);
+			name = "Common Crypt";
+			sourceTree = "<group>";
+		};
 		E4DCC8CB1BE0609800E6870B = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +148,7 @@
 		E4DCC8D61BE0609800E6870B /* socketTest */ = {
 			isa = PBXGroup;
 			children = (
+				E42C88241BF9BD05005FCB5A /* Common Crypt */,
 				E4DCC90D1BE0649900E6870B /* backAVSpeechSynthesizer.h */,
 				E4DCC90E1BE0649900E6870B /* backAVSpeechSynthesizer.m */,
 				E4DCC90A1BE0646500E6870B /* GlobalInfo.h */,
@@ -359,7 +377,9 @@
 				E4DCC8DF1BE0609800E6870B /* ViewController.m in Sources */,
 				E4DCC90F1BE0649900E6870B /* backAVSpeechSynthesizer.m in Sources */,
 				E4DCC8DC1BE0609800E6870B /* AppDelegate.m in Sources */,
+				E4CE7D4C1BF9D8B5005F4ACD /* NSString+RandomString.m in Sources */,
 				E4DCC8D91BE0609800E6870B /* main.m in Sources */,
+				E42C88271BF9BE3C005FCB5A /* CryptAligthom.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
