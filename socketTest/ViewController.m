@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "GlobalInfo.h"
 #import "CocoaAsyncSocket.h"
+#import "GZIP.h"
 
 @interface ViewController ()<AsyncSocketDelegate, UITextFieldDelegate>
 {
@@ -137,6 +138,7 @@
 //    [sock writeData:data withTimeout:100.0 tag:1];
 }
 
+//socket连接不成功时,需要切换ip地址
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err
 {
     if (err)
@@ -165,9 +167,19 @@
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     //调用gzip库进行解压
-    NSLog(@"data = %@", data);
-    NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSData *uncompressData = [data gunzippedData];
+    NSLog(@"解压前bytes=%p,length=%ld,解压后bytes=%p,length=%ld",data.bytes, data.length, uncompressData.bytes, uncompressData.length);
+    NSString *str = [[NSString alloc] initWithData:uncompressData encoding:NSUTF8StringEncoding];
     NSLog(@"服务端的数据 -> %@", str);
+    NSString *typeStr = [[str componentsSeparatedByString:@":"] firstObject];
+    if ([typeStr isEqualToString:@"Intime"])
+    {
+        textView.text = [textView.text stringByAppendingString:@"实时数据:"];
+    }
+    else if([typeStr isEqualToString:@"History"])
+    {
+        textView.text = [textView.text stringByAppendingString:@"历史数据:"];
+    }
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n", str]];
     //跳转到最新的数据
     [textView scrollRangeToVisible:NSMakeRange(textView.text.length - str.length, str.length)];
@@ -175,6 +187,7 @@
 }
 
 - (IBAction)closeAction:(UIButton *)sender {
+//    [socket disconnect];
     [socket disconnectAfterReadingAndWriting];
 }
 
