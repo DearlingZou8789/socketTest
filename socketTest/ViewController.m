@@ -10,6 +10,7 @@
 #import "GlobalInfo.h"
 #import "CocoaAsyncSocket.h"
 #import "GZIP.h"
+#import <CommonCrypto/CommonCrypto.h>
 
 @interface ViewController ()<AsyncSocketDelegate, UITextFieldDelegate>
 {
