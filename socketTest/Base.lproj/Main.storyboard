@@ -130,7 +130,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XCa-th-2Ft">
-                                <rect key="frame" x="289" y="164" width="124" height="30"/>
+                                <rect key="frame" x="289" y="164" width="301" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -155,10 +155,10 @@
                             <constraint firstItem="ihn-aa-QOh" firstAttribute="leading" secondItem="P9u-Zh-Ws2" secondAttribute="trailing" constant="15" id="Hio-WY-lEy"/>
                             <constraint firstItem="moH-oD-3y0" firstAttribute="top" secondItem="M8E-UF-Tvk" secondAttribute="bottom" constant="10" id="LRX-qx-UNv"/>
                             <constraint firstItem="M8E-UF-Tvk" firstAttribute="leading" secondItem="Dou-ml-Wro" secondAttribute="leading" constant="10" id="Lfh-bW-uzt"/>
-                            <constraint firstItem="XCa-th-2Ft" firstAttribute="trailing" secondItem="dDC-eJ-lfz" secondAttribute="trailing" id="Lt5-iu-TF0"/>
                             <constraint firstItem="ihn-aa-QOh" firstAttribute="centerY" secondItem="eHS-cy-kad" secondAttribute="centerY" id="M2x-hJ-XZp"/>
                             <constraint firstItem="eHS-cy-kad" firstAttribute="leading" secondItem="L5o-zc-1iT" secondAttribute="leading" id="MhG-nr-R3D"/>
                             <constraint firstItem="dDC-eJ-lfz" firstAttribute="leading" secondItem="L5o-zc-1iT" secondAttribute="trailing" constant="15" id="MqF-T2-7of"/>
+                            <constraint firstAttribute="trailing" secondItem="XCa-th-2Ft" secondAttribute="trailing" constant="10" id="N0U-Q5-uwq"/>
                             <constraint firstItem="p9e-fs-LY0" firstAttribute="centerY" secondItem="dDC-eJ-lfz" secondAttribute="centerY" id="NIf-mc-7Cr"/>
                             <constraint firstItem="WXX-gQ-8VO" firstAttribute="top" secondItem="p9e-fs-LY0" secondAttribute="top" id="PUL-7C-l0F"/>
                             <constraint firstItem="XCa-th-2Ft" firstAttribute="leading" secondItem="ihn-aa-QOh" secondAttribute="trailing" constant="15" id="R2M-MJ-Z0H"/>
