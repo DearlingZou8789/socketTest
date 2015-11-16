@@ -16,6 +16,8 @@
     __weak IBOutlet UITextField *ipTf;
     __weak IBOutlet UITextField *portTf;
     __weak IBOutlet UITextView *textView;
+    __weak IBOutlet UITextField *userTf;
+    __weak IBOutlet UITextField *passTf;
     NSString *ipStr;
     NSString *portStr;
     AsyncSocket *socket;
@@ -78,15 +80,20 @@
     }
 }
 
-- (IBAction)connectAction:(UIButton *)sender {
-    if ([ipTf.text isEqualToString:@""])
+- (BOOL)isRightString:(UITextField *)tf alertString:(NSString *)str
+{
+    BOOL flag = YES;
+    if ([tf.text isEqualToString:@""])
     {
-        [GlobalInfo alertViewShow:@"请输入正确的ip地址" delegate:nil];
-        return;
+        [GlobalInfo alertViewShow:str delegate:nil];
+        flag = NO;
     }
-    if ([portTf.text isEqualToString:@""])
+    return flag;
+}
+
+- (IBAction)connectAction:(UIButton *)sender {
+    if ([self isRightString:ipTf alertString:@"请输入IP地址"] || [self isRightString:portTf alertString:@"请输入端口号"] || [self isRightString:userTf alertString:@"请输入用户名"] || [self isRightString:passTf alertString:@"请输入密码"])
     {
-        [GlobalInfo alertViewShow:@"请输入正确的端口" delegate:nil];
         return;
     }
     if ((ipStr && [ipStr isEqualToString:ipTf.text]) || (portStr && [portStr isEqualToString:portTf.text]))
