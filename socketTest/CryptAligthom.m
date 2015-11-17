@@ -8,6 +8,7 @@
 
 #import "CryptAligthom.h"
 #import <CommonCrypto/CommonCrypto.h>
+#import "Encode.h"
 
 //空字符串
 #define     LocalStr_None           @""
@@ -65,9 +66,9 @@
 
 /************************************************************
  函数名称 : + (NSData *)DESEncrypt:(NSData *)data WithKey:(NSString *)key
- 函数描述 : 文本数据进行DES加密
+ 函数描述 : 文本数据进行DES加密,采用CBC加密模式,需要使用到IV(向量)
  输入参数 : (NSData *)data
- (NSString *)key
+ 输入参数 : (NSString *)key
  输出参数 : N/A
  返回参数 : (NSData *)
  备注信息 : 此函数不可用于过长文本
@@ -86,9 +87,9 @@
     
     size_t numBytesEncrypted = 0;
     CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt, kCCAlgorithmDES,
-                                          kCCOptionPKCS7Padding | kCCOptionECBMode,
-                                          keyPtr, kCCBlockSizeDES,
-                                          NULL,
+                                          kCCOptionPKCS7Padding,
+                                          [key UTF8String], kCCBlockSizeDES,
+                                          (Byte *)[[iv dataUsingEncoding:NSUTF8StringEncoding] bytes],
                                           [data bytes], dataLength,
                                           buffer, bufferSize,
                                           &numBytesEncrypted);
@@ -123,9 +124,9 @@
     
     size_t numBytesDecrypted = 0;
     CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmDES,
-                                          kCCOptionPKCS7Padding | kCCOptionECBMode,
-                                          keyPtr, kCCBlockSizeDES,
-                                          NULL,
+                                          kCCOptionPKCS7Padding,
+                                          [key UTF8String], kCCBlockSizeDES,
+                                          (Byte *)[[iv dataUsingEncoding:NSUTF8StringEncoding] bytes],
                                           [data bytes], dataLength,
                                           buffer, bufferSize,
                                           &numBytesDecrypted);

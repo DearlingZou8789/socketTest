@@ -15,6 +15,8 @@
 #import "NSData+Encrypt.h"
 #import "NSString+Encrypt.h"
 #import "NSString+Base64.h"
+#import "DESUtils.h"
+#import "Encode.h"
 
 
 @interface ViewController ()<AsyncSocketDelegate, UITextFieldDelegate>
@@ -147,12 +149,26 @@
     NSString *remoteAddress = [NSString stringWithFormat:@"host = %@, port = %d", host, port];
     NSString *localAddress = [NSString stringWithFormat:@"localhost = %@, port = %d", sock.localHost, sock.localPort];
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n%@\n", remoteAddress, localAddress]];
+    if (port == 30753)
+    {
+        [self loginTest];
+    }
+    else if(port == 30743)
+    {
+        [self getHistory];
+    }
+}
+
+//登录验证
+- (void)loginTest
+{
+    NSUInteger algthome = 1;
     //发送字符串给服务器进行通讯交互,3145
     NSString *userName = userTf.text;                       //userName
     NSString *password = passTf.text;                       //password
     NSString *companyName = @"上海涨乐互联网科技有限公司";      //account
     NSString *userEnabled = @"1";                        //enabled
-//    NSString *token = [NSString randomStringWithLength:32]; //token
+    //    NSString *token = [NSString randomStringWithLength:32]; //token
     NSString *token = @"abcdewojeroijewoqjriejw";
     //传入参数
     NSString *userArgument = [NSString stringWithFormat:@"action=validate|userName=%@|password=%@|token=%@|account=%@|enabled=%@", userName, password, token, companyName, userEnabled];
@@ -163,38 +179,83 @@
     NSString *desKey = [NSString randomStringWithLength:8];
     NSData *desData = [desKey dataUsingEncoding:NSUTF8StringEncoding];
     NSLog(@"desData.length = %ld", desData.length);
-#if 1
-    //转换成64位base,这里需要转换成64为Base不??
-    //userArgument = [userArgument base64EncodedString];
-    //NSLog(@"Base64位 = %@", userArgument);
-    //DES加密后的参数
-    userArgument = [userArgument DESEnCodeCrptionWithKey:desKey];
-    NSLog(@"DES/AES加密后的数据 = %@", userArgument);
-    //拼装最后的参数,打空格时不需要使用全角中文
-    lastPostData = [NSString stringWithFormat:@"client %@$%@", desKey, userArgument];
-//    lastPostData = [lastPostData stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
-//    lastPostData = [lastPostData stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    lastPostData = [NSString stringWithFormat:@"%@\r", lastPostData];
-    //后台进行解压
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self afterDecode:userArgument decodeKey:desKey];
-    });
-#else
-    NSString *iv = @"12345678";
-    //3DES加密
-    userArgument = [userArgument decryptedWith3DESUsingKey:desKey andIV:[iv dataUsingEncoding:NSUTF8StringEncoding]];
-    //AES加密后的参数
-//    userArgument = [userArgument encryptedWithAESUsingKey:desKey andIV:[userArgument dataUsingEncoding:NSASCIIStringEncoding]];
-#endif
+    if (algthome == 1)
+    {
+        //DES加密后的参数
+        userArgument = [userArgument DESEnCodeCrptionWithKey:desKey];
+        NSLog(@"DES/AES加密后的数据 = %@", userArgument);
+        //拼装最后的参数,打空格时不需要使用全角中文
+        lastPostData = [NSString stringWithFormat:@"client %@$%@\r\n", desKey, userArgument];
+        //    lastPostData = [lastPostData stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+        //    lastPostData = [lastPostData stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    }
+    else if(algthome == 2)
+    {
+        //转换成64位字符串
+        //3DES加密
+        userArgument = [userArgument decryptedWith3DESUsingKey:desKey andIV:[iv dataUsingEncoding:NSUTF8StringEncoding]];
+        //AES加密后的参数
+        //    userArgument = [userArgument encryptedWithAESUsingKey:desKey andIV:[userArgument dataUsingEncoding:NSASCIIStringEncoding]];
+        //瓶装最后的参数
+        lastPostData = [NSString stringWithFormat:@"client %@$%@\r\n", desKey, userArgument];
+    }
+    else if(algthome == 3)
+    {
+        userArgument = [DESUtils encryptUseDES:userArgument key:desKey];
+        lastPostData = [NSString stringWithFormat:@"client %@$%@\r\n", desKey, userArgument];
+    }
     NSData *data = [lastPostData dataUsingEncoding:NSUTF8StringEncoding];
     NSLog(@"desKey = %@,\n lastPostData = %@", desKey, lastPostData);
-    [sock writeData:data withTimeout:100 tag:1];
+    [socket writeData:data withTimeout:100 tag:1];
+    //后台进行解压
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self afterDecode:data decodeKey:desKey type:algthome];
+    });
 }
 
-- (void)afterDecode:(NSString *)str decodeKey:(NSString *)key
+- (void)getHistory
 {
-    NSString *decodeStr = [str DESDeCodeCrptionWithKey:key];
+    //商品代码
+    NSString *goodCode = @"XAGUSD";
+    //行情列表的类型
+    NSString *interval = @"M1";
+    //数据条数
+    NSString *count = @"200";
+    //DES Key
+    NSString *desKey = [NSString randomStringWithLength:8];
+    NSString *userArgument = [NSString stringWithFormat:@"action=gethistory|code=%@|interval=%@|count=%@", goodCode, interval, count];
+    //DES加密
+    userArgument = [userArgument DESEnCodeCrptionWithKey:desKey];
+    //请求发送的数据
+    NSString *postData = [NSString stringWithFormat:@"client %@$%@\r\n", desKey, userArgument];
+    NSLog(@"postData = %@\ndesKey = %@", postData, desKey);
+    NSData *data = [postData dataUsingEncoding:NSUTF8StringEncoding];
+    [socket writeData:data withTimeout:100 tag:-1];
+}
+
+- (void)afterDecode:(NSData *)dataStr decodeKey:(NSString *)key type:(NSUInteger)type
+{
+    NSString *encodeAllStr = [[NSString alloc] initWithData:dataStr encoding:NSUTF8StringEncoding];
+    NSString *encodeStr = [[encodeAllStr componentsSeparatedByString:@"$"] lastObject];
+    NSString *decodeStr = nil;
+    if(type == 1)
+    {
+        decodeStr = [encodeStr DESDeCodeCrptionWithKey:key];
+    }else if (type == 2)
+    {
+        decodeStr = [encodeStr encryptedWith3DESUsingKey:key andIV:[iv dataUsingEncoding:NSUTF8StringEncoding]];
+        decodeStr = [decodeStr base64DecodedString];
+    }
+    else if (type == 3)
+    {
+        decodeStr = [DESUtils decryptUseDES:encodeStr key:key];
+    }
     NSLog(@"解密后 = %@", decodeStr);
+}
+
+- (void)decodeString:(NSString *)str key:(NSString *)key
+{
+    NSLog(@"直接调用解密后的数据 = %@", [DESUtils decryptUseDES:str key:key]);
 }
 
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
@@ -251,7 +312,14 @@
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n", str]];
     //跳转到最新的数据
     [textView scrollRangeToVisible:NSMakeRange(textView.text.length - str.length, str.length)];
-    [sock readDataWithTimeout:-1 tag:100];
+    if (sock.connectedPort == 30743)
+    {
+        [sock disconnectAfterReadingAndWriting];
+    }
+    else if(sock.connectedPort == 30753)
+    {
+        [sock readDataWithTimeout:-1 tag:100];
+    }
 }
 
 - (IBAction)closeAction:(UIButton *)sender {

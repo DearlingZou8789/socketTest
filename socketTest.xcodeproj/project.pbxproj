@@ -226,6 +226,8 @@
 		E4CE80141BFAB2CC005F4ACD /* WebView+Debug.m in Sources */ = {isa = PBXBuildFile; fileRef = E4CE7F3B1BFAB2CC005F4ACD /* WebView+Debug.m */; };
 		E4CE80151BFAB2CC005F4ACD /* UIWindow+Hierarchy.m in Sources */ = {isa = PBXBuildFile; fileRef = E4CE7F3E1BFAB2CC005F4ACD /* UIWindow+Hierarchy.m */; };
 		E4CE80171BFAB69B005F4ACD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E4CE80161BFAB69B005F4ACD /* libz.tbd */; };
+		E4CE801A1BFAF6F7005F4ACD /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = E4CE80191BFAF6F7005F4ACD /* Base64.m */; };
+		E4CE801D1BFAF765005F4ACD /* DESUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E4CE801C1BFAF765005F4ACD /* DESUtils.m */; };
 		E4DCC8D91BE0609800E6870B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E4DCC8D81BE0609800E6870B /* main.m */; };
 		E4DCC8DC1BE0609800E6870B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4DCC8DB1BE0609800E6870B /* AppDelegate.m */; };
 		E4DCC8DF1BE0609800E6870B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4DCC8DE1BE0609800E6870B /* ViewController.m */; };
@@ -691,6 +693,11 @@
 		E4CE7F3D1BFAB2CC005F4ACD /* UIWindow+Hierarchy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWindow+Hierarchy.h"; sourceTree = "<group>"; };
 		E4CE7F3E1BFAB2CC005F4ACD /* UIWindow+Hierarchy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+Hierarchy.m"; sourceTree = "<group>"; };
 		E4CE80161BFAB69B005F4ACD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		E4CE80181BFAF6F7005F4ACD /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		E4CE80191BFAF6F7005F4ACD /* Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
+		E4CE801B1BFAF765005F4ACD /* DESUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DESUtils.h; sourceTree = "<group>"; };
+		E4CE801C1BFAF765005F4ACD /* DESUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DESUtils.m; sourceTree = "<group>"; };
+		E4CE801E1BFB0722005F4ACD /* Encode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Encode.h; sourceTree = "<group>"; };
 		E4DCC8D41BE0609800E6870B /* socketTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = socketTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4DCC8D81BE0609800E6870B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E4DCC8DA1BE0609800E6870B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -767,6 +774,11 @@
 				E42C88261BF9BE3C005FCB5A /* CryptAligthom.m */,
 				E4CE7D4A1BF9D8B5005F4ACD /* NSString+RandomString.h */,
 				E4CE7D4B1BF9D8B5005F4ACD /* NSString+RandomString.m */,
+				E4CE80181BFAF6F7005F4ACD /* Base64.h */,
+				E4CE80191BFAF6F7005F4ACD /* Base64.m */,
+				E4CE801B1BFAF765005F4ACD /* DESUtils.h */,
+				E4CE801C1BFAF765005F4ACD /* DESUtils.m */,
+				E4CE801E1BFB0722005F4ACD /* Encode.h */,
 			);
 			name = "Common Crypt";
 			sourceTree = "<group>";
@@ -2103,6 +2115,7 @@
 				E4CE7F961BFAB2CC005F4ACD /* MKMapView+ZoomLevel.m in Sources */,
 				E4CE7FC11BFAB2CC005F4ACD /* UIImage+GIF.m in Sources */,
 				E4CE7F971BFAB2CC005F4ACD /* CAAnimation+Blocks.m in Sources */,
+				E4CE801A1BFAF6F7005F4ACD /* Base64.m in Sources */,
 				E4CE7FF21BFAB2CC005F4ACD /* UIView+BlockGesture.m in Sources */,
 				E4CE7F571BFAB2CC005F4ACD /* NSDate+Reporting.m in Sources */,
 				E4CE80021BFAB2CC005F4ACD /* UIViewController+BackButtonItemTitle.m in Sources */,
@@ -2162,6 +2175,7 @@
 				E4CE7FB21BFAB2CC005F4ACD /* UIControl+ActionBlocks.m in Sources */,
 				E4CE7F9D1BFAB2CC005F4ACD /* UIAlertView+Block.m in Sources */,
 				E4CE7FEF1BFAB2CC005F4ACD /* UITextView+PlaceHolder.m in Sources */,
+				E4CE801D1BFAF765005F4ACD /* DESUtils.m in Sources */,
 				E4CE7FED1BFAB2CC005F4ACD /* UITextField+Shake.m in Sources */,
 				E4CE800A1BFAB2CC005F4ACD /* UIViewController+TopBarMessage.m in Sources */,
 				E42C88271BF9BE3C005FCB5A /* CryptAligthom.m in Sources */,
