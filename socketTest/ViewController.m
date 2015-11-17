@@ -11,6 +11,11 @@
 #import "CocoaAsyncSocket.h"
 #import "GZIP.h"
 #import "NSString+RandomString.h"
+#import "NSData+Base64.h"
+#import "NSData+Encrypt.h"
+#import "NSString+Encrypt.h"
+#import "NSString+Base64.h"
+
 
 @interface ViewController ()<AsyncSocketDelegate, UITextFieldDelegate>
 {
@@ -145,22 +150,51 @@
     //发送字符串给服务器进行通讯交互,3145
     NSString *userName = userTf.text;                       //userName
     NSString *password = passTf.text;                       //password
-    NSString *companyName = @"abcd";      //account
+    NSString *companyName = @"上海涨乐互联网科技有限公司";      //account
     NSString *userEnabled = @"1";                        //enabled
 //    NSString *token = [NSString randomStringWithLength:32]; //token
     NSString *token = @"abcdewojeroijewoqjriejw";
     //传入参数
     NSString *userArgument = [NSString stringWithFormat:@"action=validate|userName=%@|password=%@|token=%@|account=%@|enabled=%@", userName, password, token, companyName, userEnabled];
-    NSLog(@"加密前 = %@", userArgument);
+    NSLog(@"原始数据 = %@", userArgument);
+    //最终上传的字符串
+    NSString *lastPostData = nil;
+    //DES Key
     NSString *desKey = [NSString randomStringWithLength:8];
+    NSData *desData = [desKey dataUsingEncoding:NSUTF8StringEncoding];
+    NSLog(@"desData.length = %ld", desData.length);
+#if 1
+    //转换成64位base,这里需要转换成64为Base不??
+    //userArgument = [userArgument base64EncodedString];
+    //NSLog(@"Base64位 = %@", userArgument);
     //DES加密后的参数
     userArgument = [userArgument DESEnCodeCrptionWithKey:desKey];
-    //拼装最后的参数
-    NSString *lastPostData = [NSString stringWithFormat:@"client %@$%@\n\r", desKey, userArgument];
-    NSLog(@"lastPostData = %@", lastPostData);
+    NSLog(@"DES/AES加密后的数据 = %@", userArgument);
+    //拼装最后的参数,打空格时不需要使用全角中文
+    lastPostData = [NSString stringWithFormat:@"client %@$%@", desKey, userArgument];
+//    lastPostData = [lastPostData stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+//    lastPostData = [lastPostData stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    lastPostData = [NSString stringWithFormat:@"%@\r", lastPostData];
+    //后台进行解压
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self afterDecode:userArgument decodeKey:desKey];
+    });
+#else
+    NSString *iv = @"12345678";
+    //3DES加密
+    userArgument = [userArgument decryptedWith3DESUsingKey:desKey andIV:[iv dataUsingEncoding:NSUTF8StringEncoding]];
+    //AES加密后的参数
+//    userArgument = [userArgument encryptedWithAESUsingKey:desKey andIV:[userArgument dataUsingEncoding:NSASCIIStringEncoding]];
+#endif
     NSData *data = [lastPostData dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"userArgument = %@, desKey = %@,\n lastPostData = %@, data = %@", userArgument, desKey, lastPostData, data);
+    NSLog(@"desKey = %@,\n lastPostData = %@", desKey, lastPostData);
     [sock writeData:data withTimeout:100 tag:1];
+}
+
+- (void)afterDecode:(NSString *)str decodeKey:(NSString *)key
+{
+    NSString *decodeStr = [str DESDeCodeCrptionWithKey:key];
+    NSLog(@"解密后 = %@", decodeStr);
 }
 
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
@@ -183,7 +217,7 @@
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock
 {
-    NSLog(@"%@", sock);
+    NSLog(@"%@", sock.debugDescription);
     textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"连接断开"]];
 }
 

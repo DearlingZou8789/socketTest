@@ -9,19 +9,17 @@
 #import "NSString+RandomString.h"
 #import "CryptAligthom.h"
 
-static const char randomTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/!@#$%^&*()-+=";
+static const NSString *randomTable = @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+";
 
 @implementation NSString (RandomString)
 
 + (NSString *)randomStringWithLength:(NSUInteger)length
 {
     NSMutableString *str = [NSMutableString string];
-    NSUInteger count = strlen(encodingTable);
     for (NSInteger i = 0; i < length; i++)
     {
-        char c = randomTable[arc4random() % count];
-        NSString *iStr = [NSString stringWithUTF8String:&c];
-        [str appendString:iStr];
+        unichar c = [randomTable characterAtIndex:(arc4random() % randomTable.length)];
+        [str appendString:[[NSString alloc] initWithCharacters:&c length:1]];
     }
     return str;
 }
