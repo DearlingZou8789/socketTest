@@ -26,10 +26,13 @@
     __weak IBOutlet UITextView *textView;
     __weak IBOutlet UITextField *userTf;
     __weak IBOutlet UITextField *passTf;
+    __weak IBOutlet UITextField *countTf;
     NSString *ipStr;
     NSString *portStr;
     AsyncSocket *socket;
     BOOL isChangeValue;
+    NSMutableData *mutableData;
+    NSData *item;
 }
 @end
 
@@ -52,6 +55,7 @@
 {
     [super viewDidAppear:animated];
     NSLog(@"str = %@", [NSString randomStringWithLength:8]);
+    mutableData = [NSMutableData data];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -132,6 +136,7 @@
     }
     textView.text = @"";
     socket = [[AsyncSocket alloc] initWithDelegate:self];
+    mutableData.length = 0;
     NSError *error = nil;
     [socket connectToHost:ipTf.text onPort:[portTf.text intValue]  error:&error];
     if (error)
@@ -157,6 +162,8 @@
     {
         [self getHistory];
     }
+    item = [NSData dataWithBytes:"\x00\x00" length:2];
+    [sock readDataToData:item withTimeout:-1 tag:1000];
 }
 
 //登录验证
@@ -216,11 +223,11 @@
 - (void)getHistory
 {
     //商品代码
-    NSString *goodCode = @"XAGUSD";
+    NSString *goodCode = @"COPPER";
     //行情列表的类型
     NSString *interval = @"M1";
     //数据条数
-    NSString *count = @"200";
+    NSString *count = countTf.text;
     //DES Key
     NSString *desKey = [NSString randomStringWithLength:8];
     NSString *userArgument = [NSString stringWithFormat:@"action=gethistory|code=%@|interval=%@|count=%@", goodCode, interval, count];
@@ -295,11 +302,23 @@
 
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    //取到最后两个字节，跟item是否一致
+    NSData *lastTwoData = [data subdataWithRange:NSMakeRange(data.length - 2, 2)];
+    [mutableData appendData:data];
+    if (![lastTwoData isEqualToData:item])
+    {
+        //当最后两个字节不一样时，判断最后一个字节是否为\x00，如果是就说明到头了
+        NSData *compareZeroData = [NSData dataWithBytes:"\x00" length:1];
+        NSData *lastData = [data subdataWithRange:NSMakeRange(data.length - 1, 1)];
+        if (![lastData isEqualToData:compareZeroData])
+        {
+            return;
+        }
+    }
     //调用gzip库进行解压
-    NSData *uncompressData = [data gunzippedData];
+    NSData *uncompressData = [mutableData gunzippedData];
     NSLog(@"解压前bytes=%p,length=%ld,解压后bytes=%p,length=%ld",data.bytes, data.length, uncompressData.bytes, uncompressData.length);
     NSString *str = [[NSString alloc] initWithData:uncompressData encoding:NSUTF8StringEncoding];
-    NSLog(@"服务端的数据 -> %@", str);
     NSString *typeStr = [[str componentsSeparatedByString:@":"] firstObject];
     if ([typeStr isEqualToString:@"Intime"])
     {
@@ -309,12 +328,15 @@
     {
         textView.text = [textView.text stringByAppendingString:@"历史数据:"];
     }
-    textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"%@\n", str]];
+    textView.text = [textView.text stringByAppendingString:[NSString stringWithFormat:@"\n\ndata = %@\n", str]];
     //跳转到最新的数据
     [textView scrollRangeToVisible:NSMakeRange(textView.text.length - str.length, str.length)];
     if (sock.connectedPort == 30743)
     {
-        [sock disconnectAfterReadingAndWriting];
+//        if ([lastData isEqualToData:item])
+//        {
+            [sock disconnectAfterReadingAndWriting];
+//        }
     }
     else if(sock.connectedPort == 30753)
     {
