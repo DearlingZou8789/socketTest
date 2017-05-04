@@ -1,5 +1,5 @@
 osx_image: xcode8.3
 language: Objective-C
 script:
-    - xcodebuild build -xcworkspace socketTest.xcodeproj -scheme socketTest
+    - xcodebuild build -workspace socketTest.xcworkspace -scheme socketTest
 
